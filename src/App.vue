@@ -1,28 +1,24 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <router-view ></router-view>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import { USER_INFO } from "./vuex/mutation-types";
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name:'App',
+  async mounted() {
+    //自动登录
+    let res = await this.$API.autoLogin();
+    if (res.status === 0) this.$router.replace("/admin");
+    let token = localStorage.getItem("token_key");
+    res.data.token = token;
+
+    this.$store.commit(USER_INFO, res.data);
+  },
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scope>
 </style>
